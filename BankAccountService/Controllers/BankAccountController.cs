@@ -40,32 +40,32 @@ namespace BankAccountService.Controllers
             return bankAccount;
         }
 
-        [HttpPut("Debit/{value}")]
-        public async Task<ActionResult> DebitMoney(Guid id, double value)
+        [HttpPut("Debit")]
+        public async Task<ActionResult> DebitMoney(BalanceInfo balanceInfo)
         {
-            var bankAccount = await _context.BankAccounts.FindAsync(id);
+            var bankAccount = _context.BankAccounts.FirstOrDefault(b => b.AccountNumber == balanceInfo.AccountNumber);
 
             if (bankAccount == null)
             {
                 return NotFound();
             }
 
-            bankAccount.Balance -= value;
+            bankAccount.Balance -= balanceInfo.Amount;
             await _context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpPut("Credit/{value}")]
-        public async Task<ActionResult> CreditMoney(Guid id, double value)
+        [HttpPut("Credit")]
+        public async Task<ActionResult> CreditMoney(BalanceInfo balanceInfo)
         {
-            var bankAccount = await _context.BankAccounts.FindAsync(id);
+            var bankAccount = _context.BankAccounts.FirstOrDefault(b => b.AccountNumber == balanceInfo.AccountNumber);
 
             if (bankAccount == null)
             {
                 return NotFound();
             }
 
-            bankAccount.Balance += value;
+            bankAccount.Balance += balanceInfo.Amount;
             await _context.SaveChangesAsync();
             return Ok();
         }
